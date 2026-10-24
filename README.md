@@ -20,10 +20,8 @@ arquivo `.jar`** (pasta `lib/`). Você só precisa rodar, observar e escrever te
   ```
 
   Os dois comandos devem mostrar a versão 17 ou maior.
-- **Git** (ou use o Codespaces, descrito abaixo).
-- Um editor de texto qualquer (VS Code, IntelliJ, Notepad++, ...).
 
-Não precisa de Maven, de internet nem de instalar o JUnit.
+- Um editor de texto qualquer (VS Code, IntelliJ, Notepad++, ...).
 
 ### 0.2 Fork e clone (feito em dupla: **um** de vocês faz o fork)
 
@@ -38,12 +36,6 @@ Não precisa de Maven, de internet nem de instalar o JUnit.
    git clone https://github.com/<SEU-USUARIO>/<NOME-DO-REPO>.git
    cd <NOME-DO-REPO>
    ```
-
-> **Sem JDK ou sem Git nesta máquina?** Use o **GitHub Codespaces**: no seu fork, botão verde
-> **Code ▾** → aba **Codespaces** → **Create codespace on main**. Abre um VS Code no
-> navegador com Java já instalado, e os comandos abaixo funcionam no terminal dele.
-> (Contas gratuitas têm 120 horas-núcleo por mês; este lab usa bem menos de 1 hora.)
-
 ### 0.3 Rode pela primeira vez
 
 Na pasta do projeto:
@@ -61,8 +53,7 @@ parecido com:
 [         0 tests failed          ]
 ```
 
-Os testes *skipped* (pulados) são os que **você** vai completar. Se aparecer algum erro de
-`lib/...jar`, veja `lib/LEIAME.md`.
+Os testes *skipped* (pulados) são os que **você** vai completar. 
 
 **Rodar só um teste ou uma classe** (útil quando você está no meio de um nível):
 
@@ -95,8 +86,7 @@ a primeira linha de cada erro traz o arquivo e o número da linha.
 **Cada decisão tem dois lados.** Todo `if` do código pode dar verdadeiro ou falso. Um bom
 conjunto de testes faz o `if` ser **verdadeiro em pelo menos um teste e falso em pelo menos
 outro**. Testar só o caminho feliz deixa metade do código sem verificação. Neste lab, você vai
-conferir isso **à mão**, `if` por `if`; em outra atividade vamos medir isso com uma ferramenta
-de cobertura.
+conferir isso **à mão**, `if` por `if`.
 
 ---
 
@@ -209,17 +199,6 @@ Classe: `src/main/java/.../nivel3/AnalisadorEmprestimo.java` (leia as regras 1 a
 
 Você decide tudo: quais cenários, quais valores, quais asserts.
 
-**Meta:** pelo menos **um teste para cada regra** (1 a 6) e **testes nas fronteiras** (score 299/300,
-599/600, 799/800; renda e parcelas nos limites). Preencha a tabela do nível 3 no `RELATORIO.md`.
-
-Dicas de estratégia (sem entregar a resposta):
-
-- Liste primeiro as **classes de equivalência** (grupos de entradas que se comportam igual) e as
-  **fronteiras** de cada regra, antes de escrever código.
-- Use `@ParameterizedTest` + `@CsvSource` para as fronteiras.
-- Para chegar nas regras de comprometimento (30% / 50%) você precisa **escolher a renda** certa
-  para um dado valor/prazo. Calcule a parcela primeiro!
-- Os métodos `taxaAnual` e `calcularParcela` não são `private`: você pode testá-los diretamente.
 - Teste **o que o código deveria fazer** (as regras do comentário), não apenas o que ele faz.
 
 ---
@@ -239,18 +218,8 @@ java scripts/Rodar.java
 ## 7. Entrega
 
 1. Preencha o **`RELATORIO.md`**: nomes da dupla, tabelas dos `if`s e das regras, cole a saída
-   final do `java scripts/Rodar.java` e responda as perguntas de reflexão.
-2. Faça commit e push para o **seu fork**. Pelo terminal:
-
-   ```bash
-   git add .
-   git commit -m "Laboratório JUnit: <nome1> e <nome2>"
-   git push origin main
-   ```
-
-   (No Codespaces também dá pela interface: ícone **Source Control** → mensagem → **Commit** →
-   **Sync Changes**.)
-
+   final do `java scripts/Rodar.java` e responda às perguntas de reflexão.
+2. No GitHub, faça o commit dos arquivos alterados no **seu fork**. 
 3. No GitHub, abra o seu fork, aba **Actions**, e espere o círculo ficar verde ✔ (1 a 2 minutos).
 4. Envie **o link do seu fork** (`https://github.com/<usuario>/<repo>`) para a professora, conforme
    combinado em aula.
@@ -263,9 +232,6 @@ java scripts/Rodar.java
 - [ ] O fork está **público** (ou a professora foi adicionada como colaboradora)
 - [ ] O **Actions** do fork está verde ✔
 
-> **Bônus (se sobrar tempo):** encontre um cenário em que **todos os `if`s** foram exercitados dos
-> dois lados e mesmo assim o código ainda tem um bug. Descreva-o no relatório. 🙂
-
 ---
 
 ## 8. Problemas comuns
@@ -273,8 +239,6 @@ java scripts/Rodar.java
 | Sintoma | Solução |
 |---|---|
 | `Nao achei lib/...jar` | O arquivo do JUnit não está na pasta `lib/`: veja `lib/LEIAME.md`. |
-| `Este Java nao tem o compilador` | Você tem só o JRE. Instale um **JDK 17+** (ou use o Codespaces). |
-| `javac` / `java` não é reconhecido | O JDK não está no PATH. Peça ajuda à professora ou use o Codespaces. |
 | `Erro de compilacao nos testes` | Leia a primeira linha de cada erro (arquivo:linha). Costuma ser `import` faltando, `;` ou parêntese, ou o nome de um método escrito diferente do código. |
 | Teste com `double` falha por `0.30000000000000004` | Passe a tolerância: `assertEquals(esperado, obtido, 0.001)`. |
 | Meu teste não aparece na saída | Confira o `@Test` (pacote `org.junit.jupiter.api`) e se removeu o `@Disabled`. |
