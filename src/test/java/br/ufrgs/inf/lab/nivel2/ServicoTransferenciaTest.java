@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import br.ufrgs.inf.lab.nivel1.Conta;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -51,47 +50,71 @@ class ServicoTransferenciaTest {
     // ---------------------------------------------------------------
 
     @Test
-    @Disabled("N2-A")
     void transferenciaAcimaDe1000PagaTarifaDe1Porcento() {
         // DADO   origem com 10.000 e destino com 0
         // QUANDO transfere 2.000
-        // ENTÃO  status = ?  | calcularTarifa(2000) = ?  | saldo da origem = ?  | saldo do destino = ?
-        //        (calcule os valores esperados na mão ANTES de rodar!)
-        fail("Escreva o teste N2-A");
+        // ENTÃO   status = OK | saldo da origem = 10000 - 2000 - (2000 * 0.01) = 7980.0 | saldo do destino = 2000.0
+        StatusTransferencia status = servico.transferir(origem, destino, 2_000.0);
+
+        assertEquals(StatusTransferencia.OK, status);
+        assertEquals(7_980.0, origem.getSaldo(), DELTA);
+        assertEquals(2_000.0, destino.getSaldo(), DELTA);
     }
 
     @Test
-    @Disabled("N2-B")
     void transferenciaDeExatamente1000NaoPagaTarifa() {
         // Valor-limite da regra R4: "ACIMA de 1.000" ... e 1.000 exatos?
-        // Verifique o status, a tarifa e os saldos.
-        fail("Escreva o teste N2-B");
+        // Verifique o status, a tarifa e os saldos (sem tarifa aplicada).
+        StatusTransferencia status = servico.transferir(origem, destino, 1_000.0);
+
+        assertEquals(StatusTransferencia.OK, status);
+        assertEquals(9_000.0, origem.getSaldo(), DELTA);
+        assertEquals(1_000.0, destino.getSaldo(), DELTA);
     }
 
     @Test
-    @Disabled("N2-C")
     void transferenciaAcimaDoLimiteDeveSerRecusada() {
-        // Qual status? Qual o valor mínimo que ultrapassa o limite (R3)?
-        // E um teste com EXATAMENTE o limite: o que deveria acontecer?
-        // Verifique também que nenhuma conta foi alterada.
-        fail("Escreva o teste N2-C");
+        // Qual status? (Excedeu o limite máximo por transferência).
+        // Testando com o limite excedido (ex: 5000.01 se o limite for 5000) e com exatamente o limite.
+        StatusTransferencia statusInvalido = servico.transferir(origem, destino, 5_000.01);
+        assertEquals(StatusTransferencia.VALOR_INVALIDO, statusInvalido);
+        assertEquals(10_000.0, origem.getSaldo(), DELTA);
+        assertEquals(0.0, destino.getSaldo(), DELTA);
+
+        // Testando exatamente no limite (ex: 5000.0 sendo aceito)
+        StatusTransferencia statusValido = servico.transferir(origem, destino, 5_000.0);
+        assertEquals(StatusTransferencia.OK, statusValido);
     }
 
     @Test
-    @Disabled("N2-D")
     void saldoInsuficienteParaValorMaisTarifaNaoAlteraNenhumaConta() {
         // DICA: crie uma conta de origem com saldo suficiente para o VALOR,
         //       mas NÃO suficiente para VALOR + TARIFA (ex.: saldo 2.000, valor 2.000).
-        // Verifique o status e que origem E destino mantêm os saldos originais.
-        fail("Escreva o teste N2-D");
+        Conta origemLimitada = new Conta("OrigemLimitada", 2_000.0);
+        StatusTransferencia status = servico.transferir(origemLimitada, destino, 2_000.0);
+
+        assertEquals(StatusTransferencia.SALDO_INSUFICIENTE, status);
+        assertEquals(2_000.0, origemLimitada.getSaldo(), DELTA);
+        assertEquals(0.0, destino.getSaldo(), DELTA);
     }
 
     @Test
-    @Disabled("N2-E")
     void mesmaContaEValorInvalidoDevemSerRecusados() {
         // Cubra R1 (mesma conta) e R2 (valor zero e valor negativo).
-        // Quantos testes/asserts você precisa para exercitar os DOIS lados de cada "if"?
-        // Em todos os casos, confira o status E que os saldos não mudaram.
-        fail("Escreva o teste N2-E");
+        // 1. Mesma conta
+        StatusTransferencia statusMesmaConta = servico.transferir(origem, origem, 100.0);
+        assertEquals(StatusTransferencia.CONTA_ORIGEM_DESTINO_IGUAL, statusMesmaConta);
+
+        // 2. Valor zero
+        StatusTransferencia statusZero = servico.transferir(origem, destino, 0.0);
+        assertEquals(StatusTransferencia.VALOR_INVALIDO, statusZero);
+
+        // 3. Valor negativo
+        StatusTransferencia statusNegativo = servico.transferir(origem, destino, -50.0);
+        assertEquals(StatusTransferencia.VALOR_INVALIDO, statusNegativo);
+
+        // Confira que os saldos não mudaram em nenhuma das tentativas inválidas
+        assertEquals(10_000.0, origem.getSaldo(), DELTA);
+        assertEquals(0.0, destino.getSaldo(), DELTA);
     }
 }
